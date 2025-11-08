@@ -1,0 +1,15 @@
+{
+  "name": "card-match",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "sass": "^1.79.0",
+    "typescript": "^5.4.0",
+    "vite": "^5.0.0"
+  }
+}
