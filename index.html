@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Card Match Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <main class="game">
+      <header class="game__header">
+        <h1>Card Match</h1>
+        <p class="subtitle">
+          Use the two attempts you have to try to find the two matching pairs of
+          cards.
+        </p>
+        <div class="meta">
+          <span id="attemptsLabel"
+            >Attempts left: <strong id="attempts">3</strong></span
+          >
+        </div>
+      </header>
+
+      <section id="board" class="board" aria-live="polite"></section>
+
+      <section id="status" class="status" hidden>
+        <h2 id="statusText">You Won!</h2>
+        <button id="restart" class="button">Start Over!</button>
+      </section>
+    </main>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
