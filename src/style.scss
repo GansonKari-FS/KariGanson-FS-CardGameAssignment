@@ -1,0 +1,143 @@
+// SCSS variables, nesting, and a tiny mixin
+$felt: #154c2e;
+$table: #0e3521;
+$card: #ffffff;
+$ink: #2a2a2a;
+$accent: #1883d6;
+$muted: #b7c2ba;
+
+@mixin shadow-soft {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+* {
+  box-sizing: border-box;
+}
+:root {
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial,
+    sans-serif;
+}
+body {
+  margin: 0;
+  background: radial-gradient(ellipse at center, $felt 0%, $table 100%);
+  color: #fff;
+}
+
+.game {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  display: grid;
+  gap: 32px;
+
+  &__header {
+    h1 {
+      margin: 0;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+    }
+    .subtitle {
+      margin: 8px 0 14px;
+      color: $muted;
+    }
+    .meta {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+  }
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(160px, 1fr));
+  gap: 28px;
+  place-items: center;
+  justify-items: center;
+}
+
+.button {
+  background: $accent;
+  border: none;
+  color: #fff;
+  padding: 12px 22px;
+  font-weight: 700;
+  border-radius: 10px;
+  cursor: pointer;
+  @include shadow-soft;
+  &:hover {
+    filter: brightness(1.05);
+  }
+}
+
+.status {
+  text-align: center;
+}
+
+.card {
+  width: 200px;
+  height: 280px;
+  border-radius: 14px;
+  position: relative;
+  cursor: pointer;
+  border: 4px solid rgba(255, 255, 255, 0.25);
+  background: $card;
+  color: $ink;
+  @include shadow-soft;
+  display: grid;
+  place-items: center;
+  perspective: 1000px;
+  transition: transform 0.18s ease;
+
+  &.matched {
+    outline: 4px solid lighten($accent, 5%);
+  }
+
+  .front,
+  .back {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 6rem;
+    border-radius: 10px;
+    backface-visibility: hidden;
+    transition: transform 0.45s ease;
+  }
+
+  .front {
+    background: $card;
+    color: $ink;
+    transform: rotateY(180deg);
+  }
+
+  .back {
+    background: radial-gradient(
+        circle at 50% 45%,
+        rgba(255, 255, 255, 0.95) 0 24%,
+        transparent 25%
+      ),
+      radial-gradient(
+        circle at 50% 55%,
+        rgba(255, 255, 255, 0.95) 0 24%,
+        transparent 25%
+      ),
+      repeating-linear-gradient(
+        45deg,
+        #d63030,
+        #d63030 10px,
+        #b31212 10px,
+        #b31212 20px
+      );
+    color: transparent; // pattern only
+    transform: rotateY(0deg);
+  }
+
+  &.face_up {
+    .front {
+      transform: rotateY(0deg);
+    }
+    .back {
+      transform: rotateY(-180deg);
+    }
+  }
+}
