@@ -1,17 +1,9 @@
 import "./styles.scss";
-import {
-  CardData,
-  CardState,
-  GameConfig,
-  GameError,
-  GameStatus,
-} from "./types";
+import { CardData, CardState, GameConfig, GameError, GameStatus } from "./types";
 
 /**********************
  * Utility functions  *
  **********************/
-
-// Fisher–Yates shuffle (array destructuring swap)
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -21,7 +13,6 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-// Type assertion helper
 function byId<T extends HTMLElement>(id: string): T {
   const el = document.getElementById(id);
   if (!el) throw new GameError(`Missing element #${id}`);
@@ -31,14 +22,13 @@ function byId<T extends HTMLElement>(id: string): T {
 /**********************
  * Model layer (OOP)  *
  **********************/
-
 class Entity {
   constructor(public id: number) {}
 }
 
 class Card extends Entity implements CardData {
   value: string;
-  state: CardState = CardState.FaceDown; // default class property
+  state: CardState = CardState.FaceDown;
 
   constructor(id: number, value: string) {
     super(id);
@@ -48,13 +38,12 @@ class Card extends Entity implements CardData {
 
 class Deck {
   private cards: Card[] = [];
-  private index: Map<number, Card> = new Map(); // data structure Map
+  private index: Map<number, Card> = new Map();
 
   constructor(values: string[]) {
-    const duplicated = values.flatMap((v, idx) => [
-      new Card(idx * 2, v),
-      new Card(idx * 2 + 1, v),
-    ]);
+    const duplicated = values.flatMap(
+      (v, idx) => [new Card(idx * 2, v), new Card(idx * 2 + 1, v)]
+    );
     this.cards = shuffle(duplicated);
     this.cards.forEach((c) => this.index.set(c.id, c));
   }
@@ -69,12 +58,9 @@ class Deck {
     return c;
   }
 
-  reset(values: string[]) {
+  reset(values: string[]): void {
     this.cards = shuffle(
-      values.flatMap((v, idx) => [
-        new Card(idx * 2, v),
-        new Card(idx * 2 + 1, v),
-      ])
+      values.flatMap((v, idx) => [new Card(idx * 2, v), new Card(idx * 2 + 1, v)])
     );
     this.index.clear();
     this.cards.forEach((c) => this.index.set(c.id, c));
@@ -90,14 +76,12 @@ class Game {
   private selected: Card[] = [];
 
   constructor(cfg: GameConfig) {
-    // destructuring with default value
     const { pairs, maxAttempts, values = ["A", "B", "C", "D", "E", "F"] } = cfg;
     if (pairs < 1) throw new GameError("At least one pair required");
     this.pairs = pairs;
     this.maxAttempts = maxAttempts;
     this.attemptsLeft = maxAttempts;
 
-    // array methods: filter, map, sort
     const chosen = values
       .filter((_, i) => i < pairs)
       .map((v) => String(v))
@@ -123,20 +107,17 @@ class Game {
     const card = this.deck.get(id);
     if (card.state === CardState.Matched)
       throw new GameError("Card already matched");
-    if (this.selected.includes(card)) return card; // ignore duplicate clicks
+    if (this.selected.includes(card)) return card;
 
     card.state = CardState.FaceUp;
     this.selected.push(card);
 
-    if (this.selected.length === 2) {
-      this.evaluateTurn();
-    }
+    if (this.selected.length === 2) this.evaluateTurn();
 
     return card;
   }
 
   private evaluateTurn(): void {
-    // object destructuring with renaming
     const [{ value: aVal, id: aId }, { value: bVal, id: bId }] = this
       .selected as [Card, Card];
 
@@ -148,7 +129,7 @@ class Game {
       if (remaining.length === 0) this.status = GameStatus.Won;
     } else {
       this.attemptsLeft -= 1;
-      const [first, second] = this.selected; // array destructuring
+      const [first, second] = this.selected;
       setTimeout(() => {
         first.state = CardState.FaceDown;
         second.state = CardState.FaceDown;
@@ -161,10 +142,7 @@ class Game {
   public reset(values?: string[]): void {
     const pool = values && values.length >= this.pairs ? values : undefined;
     const finalValues =
-      pool ??
-      this.getCards()
-        .slice(0, this.pairs)
-        .map((c) => c.value);
+      pool ?? this.getCards().slice(0, this.pairs).map((c) => c.value);
     this.deck.reset(finalValues);
     this.start();
   }
@@ -173,14 +151,12 @@ class Game {
 /************************
  * View/Controller (UI) *
  ************************/
-
 const attemptsEl = byId<HTMLSpanElement>("attempts");
 const board = byId<HTMLDivElement>("board");
 const statusWrap = byId<HTMLDivElement>("status");
 const statusText = byId<HTMLHeadingElement>("statusText");
 const restartBtn = byId<HTMLButtonElement>("restart");
 
-// nested destructuring & default value param
 function renderCard(
   { id, value, state }: CardData,
   refs: { map: Map<number, HTMLElement> } = { map: new Map() }
@@ -188,7 +164,6 @@ function renderCard(
   const cardEl = document.createElement("button");
   cardEl.className = `card ${state.toLowerCase()}`;
   cardEl.setAttribute("data-id", String(id));
-  cardEl.setAttribute("aria-label", `Card ${id}`);
   cardEl.innerHTML = `<span class="front">${value}</span><span class="back" aria-hidden="true"></span>`;
   refs.map.set(id, cardEl);
   return cardEl;
@@ -207,16 +182,14 @@ function setStatus(status: GameStatus): void {
   statusText.textContent = status === GameStatus.Won ? "You Won!" : "Game Over";
 }
 
-// setup game (3 pairs, 3 attempts)
 const game = new Game({
   pairs: 3,
   maxAttempts: 3,
   values: ["A", "B", "C", "🍋", "🍊", "🍉"],
 });
 
-// skipping array items example
 const sample = ["x", "y", "z", "w"];
-const [first, , third] = sample; // skip "y"
+const [first, , third] = sample;
 void first;
 void third;
 
