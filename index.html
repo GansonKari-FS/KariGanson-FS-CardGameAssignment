@@ -1,16 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Card Match Game</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
-      rel="stylesheet"
-    />
-
     <link
       href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@500;700&display=swap"
       rel="stylesheet"
@@ -21,13 +14,10 @@
       <header class="game__header">
         <h1>Card Match</h1>
         <p class="subtitle">
-          Use the two attempts you have to try to find the two matching pairs of
-          cards.
+          Match all 3 pairs in under 3 attempts to win the game!
         </p>
         <div class="meta">
-          <span id="attemptsLabel"
-            >Attempts left: <strong id="attempts">3</strong></span
-          >
+          Attempts left: <strong id="attempts">3</strong>
         </div>
       </header>
 
@@ -35,7 +25,7 @@
 
       <section id="status" class="status" hidden>
         <h2 id="statusText">You Won!</h2>
-        <button id="restart" class="button">Start Over!</button>
+        <button id="restart" class="button">Restart Game</button>
       </section>
     </main>
 

@@ -76,7 +76,7 @@ class Game {
   private selected: Card[] = [];
 
   constructor(cfg: GameConfig) {
-    const { pairs, maxAttempts, values = ["A", "B", "C", "D", "E", "F"] } = cfg;
+    const { pairs, maxAttempts, values = ["A", "B", "C", "🍋", "🍊", "🍉"] } = cfg;
     if (pairs < 1) throw new GameError("At least one pair required");
     this.pairs = pairs;
     this.maxAttempts = maxAttempts;
@@ -123,10 +123,13 @@ class Game {
 
     if (aVal === bVal && aId !== bId) {
       this.selected.forEach((c) => (c.state = CardState.Matched));
-      const remaining = this.getCards().filter(
-        (c) => c.state !== CardState.Matched
-      );
-      if (remaining.length === 0) this.status = GameStatus.Won;
+      // Cards will fade out (handled by CSS + DOM)
+      setTimeout(() => {
+        const remaining = this.getCards().filter(
+          (c) => c.state !== CardState.Matched
+        );
+        if (remaining.length === 0) this.status = GameStatus.Won;
+      }, 350);
     } else {
       this.attemptsLeft -= 1;
       const [first, second] = this.selected;
@@ -136,6 +139,7 @@ class Game {
       }, 450);
       if (this.attemptsLeft <= 0) this.status = GameStatus.Lost;
     }
+
     this.selected = [];
   }
 
@@ -149,7 +153,7 @@ class Game {
 }
 
 /************************
- * View/Controller (UI) *
+ * View / Controller (UI)
  ************************/
 const attemptsEl = byId<HTMLSpanElement>("attempts");
 const board = byId<HTMLDivElement>("board");
@@ -188,11 +192,6 @@ const game = new Game({
   values: ["A", "B", "C", "🍋", "🍊", "🍉"],
 });
 
-const sample = ["x", "y", "z", "w"];
-const [first, , third] = sample;
-void first;
-void third;
-
 function buildBoard(cards: Card[]): void {
   board.innerHTML = "";
   const elementIndex = new Map<number, HTMLElement>();
@@ -227,6 +226,12 @@ function buildBoard(cards: Card[]): void {
           el.classList.toggle("face_up", state === CardState.FaceUp);
           el.classList.toggle("matched", state === CardState.Matched);
         });
+
+        // Remove matched elements from the DOM
+        board.querySelectorAll(".matched").forEach((el) => {
+          setTimeout(() => el.remove(), 600);
+        });
+
         updateAttempts(game.attemptsLeft);
         setStatus(game.status);
       }, 500);
